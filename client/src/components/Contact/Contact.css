@@ -73,3 +73,122 @@
         width: 100%;
     }
 }
+
+.edit-button {
+  background-color: #ff9800;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.edit-button:hover {
+  background-color: #e68900;
+}
+
+.edit-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* Styles for the Edit Contact Popup Form */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: white;
+  padding: 20px; /* Adjusted padding for better responsiveness */
+  border-radius: 12px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+  max-width: 90%; /* Set a maximum width for smaller screens */
+  max-height: 80%; /* Limit height for scrollable content */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.popup-content h2 {
+  margin-bottom: 15px; /* Adjusted for better spacing */
+  font-size: 1.5rem;
+  color: #333; /* Dark color for heading */
+  font-weight: bold; /* Bold text for emphasis */
+}
+
+.popup-content form {
+  display: flex;
+  flex-direction: column;
+}
+
+.popup-content label {
+  margin-bottom: 8px; /* Adjusted for better spacing */
+  font-weight: bold;
+}
+
+.popup-content input,
+.popup-content textarea {
+  width: 100%; /* Added to ensure full width */
+  padding: 10px; /* Increased padding */
+  margin-bottom: 12px; /* Adjusted for better spacing */
+  border: 1px solid rgba(128, 128, 128, 0.5); /* Adjusted border color */
+  border-radius: 6px; /* Increased border radius */
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.3s;
+}
+
+.popup-content input:focus,
+.popup-content textarea:focus {
+  border: 1px solid #007BFF; /* Highlight border color on focus */
+}
+
+.popup-content textarea {
+  resize: vertical; /* Allow vertical resizing */
+  min-height: 100px; /* Increased minimum height for better usability */
+  margin-bottom: 15px; /* Adjusted spacing */
+}
+
+.popup-content button {
+  padding: 10px; /* Increased padding */
+  border: none;
+  border-radius: 6px; /* Increased border radius */
+  cursor: pointer;
+  background: #007BFF; /* Primary button color */
+  color: white;
+  font-size: 1rem;
+  transition: background 0.3s;
+  margin-top: 10px; /* Added spacing above buttons */
+}
+
+.popup-content button[type="submit"] {
+  background-color: #0056b3; /* Adjust to use variable */
+}
+
+.popup-content button[type="button"] {
+  background-color: transparent; /* Ensure transparent background */
+  color: var(--secondary-text-color);
+}
+
+.popup-content button:hover {
+  background: #007BFF; /* Darker color on hover */
+}
+
+.popup-content button.cancel {
+  background: #ff4d4d; /* Different color for cancel button */
+}
+
+.popup-content button.cancel:hover {
+  background: #e63939; /* Darker on hover */
+}
+
+

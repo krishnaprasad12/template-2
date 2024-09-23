@@ -7,6 +7,8 @@ const cors=require('cors')
 const path = require('path');
 const dataRoute = require('./routes/contactUs')
 const adminRoute = require('./routes/admin')
+const valueRoute = require('./routes/value')
+
 
 dotenv.config(); // read the .env file
 connect() // connect to MongoDB
@@ -20,6 +22,7 @@ app.use(express.urlencoded({ extended: true }))  // parse URL-encoded bodies
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));  // http://localhost:3000/uploads/imagename.jpg
 app.use('/api', dataRoute); // use the router
 app.use('/api', adminRoute); // use the admin router
+app.use('/api', valueRoute); // use the value router
 
 app.get('/', (req, res) => res.send('Hello World!'))
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

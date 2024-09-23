@@ -1,12 +1,51 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import "./Footer.css";
-const Footer = () => {
+import axios from 'axios';
+
+const Footer = ({ setIsAdmin }) => {
   const [showLoginForm, setShowLoginForm] = useState(false);
+  const [isAdmin, setIsAdminLocal] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsAdminLocal(true);
+      setIsAdmin(true);
+    }
+  }, [setIsAdmin]);
+
   const toggleLoginForm = () => setShowLoginForm(!showLoginForm);
+  // Function to handle login
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post('http://localhost:3000/api/admin/login', { username, password });
+      if (res.data.success) {
+        setIsAdminLocal(true);
+        setIsAdmin(true);
+        localStorage.setItem('token', res.data.token);
+        setShowLoginForm(false);
+      } else {
+        alert('Login failed');
+      }
+    } catch (error) {
+      console.log(error);
+      alert('Login failed');
+    }
+  };
+  // Function to handle logout
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsAdminLocal(false);
+    setIsAdmin(false);
+    alert('Logged out successfully');
+  };
+
   return (
     <div className="f-wrapper">
       <div className="paddings innerWidth flexCenter f-container">
-        {/* left side */}
         <div className="flexColStart f-left">
           <img src="./logo2.png" alt="" width={120} />
           <span className="secondaryText">
@@ -23,25 +62,50 @@ const Footer = () => {
             <span>Services</span>
             <span>Product</span>
             <span>About Us</span>
-            {/* Button to toggle login form */}
-            <button onClick={toggleLoginForm} className="admin-button">
-              Admin Login
-            </button>
+            
+            {!isAdmin && (
+              <button onClick={toggleLoginForm} className="admin-button">
+                Admin Login
+              </button>
+            )}
+            {isAdmin && (
+              <>
+                <button className="edit-button">Edit Content</button>
+                <button onClick={handleLogout} className="logout-button">
+                  Logout
+                </button>
+              </>
+            )}
           </div>
         </div>
+      </div>
 
-        {/* Conditional rendering of the login form */}
-        {showLoginForm && (
-          <div className="login-form">
+      {/* Modal for Login Form */}
+      {showLoginForm && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={toggleLoginForm}>&times;</span>
             <h3>Admin Login</h3>
-            <form>
-              <input type="text" placeholder="Username" required />
-              <input type="password" placeholder="Password" required />
+            <form onSubmit={handleLogin}>
+              <input
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
               <button type="submit">Login</button>
             </form>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

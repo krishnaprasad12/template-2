@@ -1,34 +1,44 @@
 .v-container .image-container {
-  border: 8px solid rgb(232 232 232 / 93%);
+  border: 8px solid rgb(232, 232, 232, 0.93);
 }
+
 .v-container > div {
   flex: 1;
 }
+
 .v-right {
   gap: 0.5rem;
 }
+
 .accordion {
   margin-top: 2rem;
   border: none;
 }
+
 .accordionItem {
   background: white;
   border: 0.8px solid rgba(128, 128, 128, 0.143);
   border-radius: 8px;
   overflow: hidden;
-  margin-bottom: 20px;
+  margin-bottom: 24px; /* Increased margin for spacing between items */
+  transition: box-shadow 0.3s ease, border-radius 0.3s ease;
 }
 
 .accordionItem.expanded {
   box-shadow: var(--shadow);
   border-radius: 6px;
+  transition: box-shadow 0.3s ease, border-radius 0.3s ease;
 }
+
 .accordionButton {
   background: white;
-  padding: 1rem;
+  padding: 1.5rem; /* Increased padding for more space inside */
   width: 100%;
   justify-content: space-between;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px; /* Additional margin for better spacing */
 }
 
 .icon {
@@ -36,22 +46,152 @@
   background: #eeeeff;
   border-radius: 5px;
 }
+
 .icon svg {
   fill: var(--blue);
 }
 
-.accordionButton .primaryText{
-    font-size: 1.1rem;
+.accordionButton .primaryText {
+  font-size: 1.2rem; /* Slightly increased font size for better readability */
+  font-weight: 500;
+  color: var(--primary-text-color);
 }
 
+.accordionItemPanel {
+  padding: 1.2rem; /* Adjusted padding for the content */
+  background-color: #f9f9f9;
+  border-top: 1px solid rgba(128, 128, 128, 0.143);
+}
+
+.secondaryText {
+  font-size: 1rem;
+  color: var(--secondary-text-color);
+  line-height: 1.5;
+}
+
+.accordionItem.collapsed .accordionButton {
+  transition: background-color 0.3s ease;
+}
+
+.accordionItem.expanded .accordionButton {
+  background-color: #f0f0ff;
+}
+
+/* Styles for the Edit Contact Popup Form */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: white;
+  padding: 20px; /* Adjusted padding for better responsiveness */
+  border-radius: 12px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+  max-width: 90%; /* Set a maximum width for smaller screens */
+  max-height: 80%; /* Limit height for scrollable content */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.popup-content h2 {
+  margin-bottom: 15px; /* Adjusted for better spacing */
+  font-size: 1.5rem;
+  color: #333; /* Dark color for heading */
+  font-weight: bold; /* Bold text for emphasis */
+}
+
+.popup-content form {
+  display: flex;
+  flex-direction: column;
+}
+
+.popup-content label {
+  margin-bottom: 8px; /* Adjusted for better spacing */
+  font-weight: bold;
+}
+
+.popup-content input,
+.popup-content textarea {
+  width: 100%; /* Added to ensure full width */
+  padding: 10px; /* Increased padding */
+  margin-bottom: 12px; /* Adjusted for better spacing */
+  border: 1px solid rgba(128, 128, 128, 0.5); /* Adjusted border color */
+  border-radius: 6px; /* Increased border radius */
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.3s;
+}
+
+.popup-content input:focus,
+.popup-content textarea:focus {
+  border: 1px solid #007BFF; /* Highlight border color on focus */
+}
+
+.popup-content textarea {
+  resize: vertical; /* Allow vertical resizing */
+  min-height: 100px; /* Increased minimum height for better usability */
+  margin-bottom: 15px; /* Adjusted spacing */
+}
+
+.popup-content button {
+  padding: 10px; /* Increased padding */
+  border: none;
+  border-radius: 6px; /* Increased border radius */
+  cursor: pointer;
+  background: #007BFF; /* Primary button color */
+  color: white;
+  font-size: 1rem;
+  transition: background 0.3s;
+  margin-top: 10px; /* Added spacing above buttons */
+}
+
+.popup-content button[type="submit"] {
+  background-color: #0056b3; /* Adjust to use variable */
+}
+
+.popup-content button[type="button"] {
+  background-color: transparent; /* Ensure transparent background */
+  color: var(--secondary-text-color);
+}
+
+.popup-content button:hover {
+  background: #007BFF; /* Darker color on hover */
+}
+
+.popup-content button.cancel {
+  background: #ff4d4d; /* Different color for cancel button */
+}
+
+.popup-content button.cancel:hover {
+  background: #e63939; /* Darker on hover */
+}
+
+
 @media (max-width: 1024px) {
-    .v-container{
-        flex-direction: column;
-    }
+  .v-container {
+    flex-direction: column;
+  }
+  
+  .accordionButton {
+    flex-direction: row;
+    justify-content: space-between;
+  }
 }
 
 @media (max-width: 768px) {
-    .accordionButton .primaryText{
-        font-size: .8rem;
-    }
+  .accordionButton .primaryText {
+    font-size: 0.9rem; /* Adjusted font size for small screens */
+  }
+  
+  .accordionButton {
+    padding: 1rem; /* Slightly reduced padding on smaller screens */
+  }
 }
