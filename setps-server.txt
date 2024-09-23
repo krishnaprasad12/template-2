@@ -1,0 +1,12 @@
+Server
+
+1. npm init
+2. Install in server npm i cors dotenv express mongoose multer nodemon
+3. index.js file creation
+4. In config creat db.js for mongodb connnection
+5. Create .env file and store mongodb url
+6. Create index.js 
+7. Create model schema
+8. Create routes for the model
+9. Test the routes in postman
+10. After testing update them to front end.

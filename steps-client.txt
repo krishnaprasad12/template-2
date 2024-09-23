@@ -1,0 +1,8 @@
+Client
+
+1. Set Client Template
+2. Install axios
+3. Check wheather the data coming from backend.
+4. Check post route 
+
+
