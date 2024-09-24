@@ -8,6 +8,8 @@ const path = require('path');
 const dataRoute = require('./routes/contactUs')
 const adminRoute = require('./routes/admin')
 const valueRoute = require('./routes/value')
+const heroRoute = require('./routes/hero')
+// const productRoute = require('./routes/product')
 
 
 dotenv.config(); // read the .env file
@@ -23,6 +25,8 @@ app.use('/uploads', express.static(path.join(__dirname, '/uploads')));  // http:
 app.use('/api', dataRoute); // use the router
 app.use('/api', adminRoute); // use the admin router
 app.use('/api', valueRoute); // use the value router
+app.use('/api',heroRoute); // use the hero router
+// app.use('/api',productRoute); // use the product router
 
 app.get('/', (req, res) => res.send('Hello World!'))
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

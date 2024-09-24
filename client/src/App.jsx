@@ -4,7 +4,7 @@ import Footer from "./components/Footer/Footer";
 import GetStarted from "./components/GetStarted/GetStarted";
 import Header from "./components/Header/Header";
 import Hero from "./components/Hero/Hero";
-import Residencies from "./components/Residencies/Residencies";
+import Products from "./components/Products/Products";
 import Value from "./components/Value/Value";
 import React, { useState } from 'react';
 
@@ -15,12 +15,12 @@ function App() {
   return (
     <div className="App">
       <div>
-        <Header />
-        <Hero />
-        <Residencies />
+        <Header isAdmin = {isAdmin}/>
+        <Hero isAdmin = {isAdmin}/>
+        <Products isAdmin = {isAdmin} />
         <Value isAdmin = {isAdmin} />
         <Contact isAdmin={isAdmin} />
-        <GetStarted />
+        <GetStarted isAdmin = {isAdmin} />
         <Footer setIsAdmin={setIsAdmin} /> {/* Passing setIsAdmin */}
       </div>
     </div>

@@ -3,11 +3,11 @@ import data from "../../utils/slider.json";
 import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
 // Import Swiper styles
 import "swiper/css";
-import "./Residencies.css";
+import "./Products.css";
 import { sliderSettings } from "../../utils/common";
-const Residencies = () => {
+const Products = () => {
   return (
-    <div id="residencies" className="r-wrapper">
+    <div id="products" className="r-wrapper">
       <div className="paddings innerWidth r-container">
         <div className="flexColStart r-head">
           <span className="orangeText">Best Choices</span>
@@ -36,7 +36,7 @@ const Residencies = () => {
   );
 };
 
-export default Residencies;
+export default Products;
 
 const SlideNextButton = () => {
   const swiper = useSwiper();

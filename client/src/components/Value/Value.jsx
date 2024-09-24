@@ -55,7 +55,7 @@ const EditContactPopup = ({ contact, onClose, onSave }) => {
   return (
     <div className="popup">
   <div className="popup-content">
-    <h2>Edit Contact Information</h2>
+    <h2>Edit Value Information</h2>
     <form onSubmit={handleSubmit}>
       <label>
         Heading
