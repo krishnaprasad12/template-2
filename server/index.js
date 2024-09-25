@@ -9,7 +9,9 @@ const dataRoute = require('./routes/contactUs')
 const adminRoute = require('./routes/admin')
 const valueRoute = require('./routes/value')
 const heroRoute = require('./routes/hero')
-// const productRoute = require('./routes/product')
+const productRoute = require('./routes/product')
+const startRoute = require('./routes/start')
+const footerRoute = require('./routes/footer')
 
 
 dotenv.config(); // read the .env file
@@ -26,7 +28,9 @@ app.use('/api', dataRoute); // use the router
 app.use('/api', adminRoute); // use the admin router
 app.use('/api', valueRoute); // use the value router
 app.use('/api',heroRoute); // use the hero router
-// app.use('/api',productRoute); // use the product router
+app.use('/api',productRoute); // use the product router
+app.use('/api',startRoute); // use the start router
+app.use('/api',footerRoute); // use the footer router
 
 app.get('/', (req, res) => res.send('Hello World!'))
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

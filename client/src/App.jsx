@@ -21,7 +21,7 @@ function App() {
         <Value isAdmin = {isAdmin} />
         <Contact isAdmin={isAdmin} />
         <GetStarted isAdmin = {isAdmin} />
-        <Footer setIsAdmin={setIsAdmin} /> {/* Passing setIsAdmin */}
+        <Footer setIsAdmin={setIsAdmin} isAdmin = {isAdmin} /> {/* Passing setIsAdmin */}
       </div>
     </div>
   );
