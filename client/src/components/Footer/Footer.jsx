@@ -18,9 +18,11 @@ const EditFooterPopup = ({ footerData, onClose, onSave }) => {
     data.append("address", formData.address); // Add other fields as necessary
 
     try {
+      const token = localStorage.getItem('token'); // Retrieve token from local storage
       const response = await axios.post("http://localhost:3000/api/footer/edit", data, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
+          'Authorization': `Bearer ${token}` // Include token in the headers
         },
       });
       console.log("Response:", response.data);
@@ -90,10 +92,39 @@ const Footer = ({ setIsAdmin }) => {
     if (token) {
       setIsAdminLocal(true);
       setIsAdmin(true);
+
     }
   }, [setIsAdmin]);
 
   const toggleLoginForm = () => setShowLoginForm(!showLoginForm);
+
+  const autoLogout = async() => {
+    const expiry = localStorage.getItem('tokenExpiry');
+    
+    if (!expiry) {
+        // If there's no expiry time set, log out immediately
+        logout();
+        return;
+    }
+
+    const currentTime = new Date().getTime();
+    const timeout = expiry - currentTime;
+
+    if (timeout > 0) {
+        setTimeout(() => {
+            logout(); // Call your logout function when the token expires
+        }, timeout);
+    } else {
+        logout(); // Token already expired, log out immediately
+    }
+  }
+
+  const logout= async () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('tokenExpiry');
+        alert('Session expired. You have been logged out.');
+        window.location.href = '/'; // Redirect to login page
+  }
 
   // Function to handle login
   const handleLogin = async (e) => {
@@ -104,7 +135,11 @@ const Footer = ({ setIsAdmin }) => {
         setIsAdminLocal(true);
         setIsAdmin(true);
         localStorage.setItem('token', res.data.token);
-        setShowLoginForm(false);
+        const decodedToken = JSON.parse(atob(res.data.token.split('.')[1])); // Decode the JWT payload
+        const tokenExpiry = decodedToken.exp * 1000; // Convert expiration time to milliseconds
+        localStorage.setItem('tokenExpiry', tokenExpiry);
+        setShowLoginForm(false);  // Close the login form upon successful login
+        autoLogout();
       } else {
         alert('Login failed');
       }
@@ -135,7 +170,7 @@ const Footer = ({ setIsAdmin }) => {
     <div className="f-wrapper">
       <div className="paddings innerWidth flexCenter f-container">
         <div className="flexColStart f-left">
-          <img src="./logo2.png" alt="" width={120} />
+          <img src="./logo.png" alt="" width={90} />
           <span className="secondaryText">
             {footer[0]?.description || "Our description"}
           </span>

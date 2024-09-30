@@ -4,6 +4,8 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs');
+const adminRoute = require('./admin')
+const { authenticateAdmin } = adminRoute;
 
 // Multer storage configuration
 const storage = multer.diskStorage({
@@ -28,20 +30,23 @@ router.get('/values', async (req, res) => {
 });
 
 // Update the value us page for the 0th index with image upload
-router.post('/values/edit', upload.single('imageUrl'), async (req, res) => {
+router.post('/values/edit', authenticateAdmin, upload.single('imageUrl'), async (req, res) => {
     try {
         const { heading, title, description, subheading1, description1, subheading2, description2, subheading3, description3 } = req.body;
 
-        // Find the document at index 0 (assuming only one document should exist)
+        // Find the document (assuming only one document should exist)
         let value = await valueModel.findOne({});
 
-        // If no document exists, create a new one
+        // Define the fixed image name
+        const fixedImageName = 'valueimage.jpg'; // This will be the name for the image file
+
         if (!value) {
+            // If no document exists, create a new one
             value = new valueModel({
                 heading,
                 title,
                 description,
-                imageUrl: req.file ? `uploads/${req.file.filename}` : '', // Use the uploaded file if available
+                imageUrl: req.file ? `uploads/${fixedImageName}` : '', // Use the uploaded file if available
                 subheading1,
                 description1,
                 subheading2,
@@ -55,17 +60,27 @@ router.post('/values/edit', upload.single('imageUrl'), async (req, res) => {
             value.title = title;
             value.description = description;
 
-            // If a new image is uploaded, delete the old image and update
+            // If a new image is uploaded, replace the old image with the fixed image name
             if (req.file) {
-                if (value.imageUrl) {
-                    const oldImagePath = path.join(__dirname, '..', value.imageUrl);
-                    fs.unlink(oldImagePath, (err) => {
+                const imagePath = path.join(__dirname, '..', 'uploads', fixedImageName);
+
+                // Delete the old image if it exists
+                if (fs.existsSync(imagePath)) {
+                    fs.unlink(imagePath, (err) => {
                         if (err) {
                             console.error('Error deleting old image:', err);
                         }
                     });
                 }
-                value.imageUrl = `uploads/${req.file.filename}`;
+
+                // Rename the new image to the fixed image name
+                fs.rename(req.file.path, imagePath, (err) => {
+                    if (err) {
+                        console.error('Error renaming new image:', err);
+                    }
+                });
+
+                value.imageUrl = `uploads/${fixedImageName}`; // Save the path with the fixed image name
             }
 
             value.subheading1 = subheading1;
@@ -78,11 +93,12 @@ router.post('/values/edit', upload.single('imageUrl'), async (req, res) => {
 
         // Save the document (either as a new one or an updated one)
         await value.save();
-        res.status(200).json({ message: 'Value saved successfully!' });
+        res.status(200).json({ message: 'Value section saved successfully!' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
+
 
 
 module.exports = router;

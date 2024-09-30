@@ -1,6 +1,9 @@
 const footerModel = require('../models/footerModel');   
 const express = require('express');
 const router = express.Router();
+const adminRoute = require('./admin')
+const { authenticateAdmin } = adminRoute;
+
 
 // Get the footer page
 router.get('/footer', async (req, res) => {
@@ -13,7 +16,7 @@ router.get('/footer', async (req, res) => {
 });
 
 // POST route to update/create the footer section
-router.post('/footer/edit', async (req, res) => {
+router.post('/footer/edit',authenticateAdmin ,async (req, res) => {
     try {
         const { description, address } = req.body;
 

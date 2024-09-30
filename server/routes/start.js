@@ -1,6 +1,8 @@
 const startModel = require('../models/startModel');   
 const express = require('express');
 const router = express.Router();
+const adminRoute = require('./admin')
+const { authenticateAdmin } = adminRoute;
 
 // Get the value us page
 router.get('/start', async (req, res) => {
@@ -13,7 +15,7 @@ router.get('/start', async (req, res) => {
 });
 
 // POST route to update/create the start section
-router.post('/start/edit', async (req, res) => {
+router.post('/start/edit',authenticateAdmin , async (req, res) => {
     try {
         const { title, description, url } = req.body;
 

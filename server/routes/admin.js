@@ -54,7 +54,7 @@ router.post('/admin/login', async (req, res) => {
 
         // Generate JWT token for the admin
         const token = jwt.sign({ id: admin._id, username: admin.username }, JWT_SECRET, {
-            expiresIn: '1h', // Token expiration time
+            expiresIn: '30m', // Token expiration time
         });
 
         res.json({ success: true, token });
@@ -92,9 +92,11 @@ const authenticateAdmin = (req, res, next) => {
 
 // Protected route example - only admins can access
 router.get('/protected', authenticateAdmin, (req, res) => {
+    console.log(req.admin); // Access admin details from request object
     res.json({ message: "This is a protected route accessible only by admins" });
 });
 
+router.authenticateAdmin = authenticateAdmin;
 module.exports = router;
 
 

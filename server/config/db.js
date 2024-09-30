@@ -1,13 +1,16 @@
-const mongoose=require('mongoose');
-const connect = async () =>{
+const mongoose = require('mongoose');
+
+const connect = async () => {
     try {
-        // in a React app, environment variables are accessed using the process.env
-        await mongoose.connect(process.env.MONGO_URI)
-        .then(()=>console.log('connected'));
+        // Connect to MongoDB using the URI from environment variables
+        await mongoose.connect(process.env.MONGO_URI);
+
         console.log('MongoDB Connected');
-    }catch (error) {
+        console.log(`Mongo URI: ${process.env.MONGO_URI}`); // Logging the connection URI
+    } catch (error) {
         console.error(`Error: ${error.message}`);
         process.exit(1);
     }
-}
-module.exports=connect;
+};
+
+module.exports = connect;

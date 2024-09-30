@@ -4,6 +4,8 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs');
+const adminRoute = require('./admin')
+const { authenticateAdmin } = adminRoute;
 
 // Multer storage configuration
 const storage = multer.diskStorage({
@@ -28,15 +30,18 @@ router.get('/contactus', async (req, res) => {
 });
 
 // Update the contact us page for the 0th index with image upload
-router.post('/contactus/edit', upload.single('imageUrl'), async (req, res) => {
+router.post('/contactus/edit', authenticateAdmin, upload.single('imageUrl'), async (req, res) => {
     try {
         const { title, description, call, message, chat, videocall } = req.body;
 
-        // Find the document at index 0 (assuming only one document should exist)
+        // Find the document (assuming only one document should exist)
         let contact = await contactModel.findOne({});
 
-        // If no document exists, create a new one
+        // Define the fixed image name
+        const fixedImageName = 'contactimage.jpg'; // Fixed name for the image
+
         if (!contact) {
+            // If no document exists, create a new one
             contact = new contactModel({
                 title,
                 description,
@@ -44,7 +49,7 @@ router.post('/contactus/edit', upload.single('imageUrl'), async (req, res) => {
                 message,
                 chat,
                 videocall,
-                imageUrl: req.file ? `uploads/${req.file.filename}` : '', // Use the uploaded file if available
+                imageUrl: req.file ? `uploads/${fixedImageName}` : '', // Use the uploaded file if available
             });
         } else {
             // If the document exists, update the values
@@ -55,23 +60,33 @@ router.post('/contactus/edit', upload.single('imageUrl'), async (req, res) => {
             contact.chat = chat;
             contact.videocall = videocall;
 
-            // If a new image is uploaded, delete the old image and update
+            // If a new image is uploaded, replace the old image with the fixed image name
             if (req.file) {
-                if (contact.imageUrl) {
-                    const oldImagePath = path.join(__dirname, '..', contact.imageUrl);
-                    fs.unlink(oldImagePath, (err) => {
+                const imagePath = path.join(__dirname, '..', 'uploads', fixedImageName);
+
+                // Delete the old image if it exists
+                if (fs.existsSync(imagePath)) {
+                    fs.unlink(imagePath, (err) => {
                         if (err) {
                             console.error('Error deleting old image:', err);
                         }
                     });
                 }
-                contact.imageUrl = `uploads/${req.file.filename}`;
+
+                // Rename the new image to the fixed image name
+                fs.rename(req.file.path, imagePath, (err) => {
+                    if (err) {
+                        console.error('Error renaming new image:', err);
+                    }
+                });
+
+                contact.imageUrl = `uploads/${fixedImageName}`; // Save the path with the fixed image name
             }
         }
 
         // Save the document (either as a new one or an updated one)
         await contact.save();
-        res.status(200).json({ message: 'Contact saved successfully!' });
+        res.status(200).json({ message: 'Contact section saved successfully!' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

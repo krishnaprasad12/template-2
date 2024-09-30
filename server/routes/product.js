@@ -4,6 +4,8 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs');
+const adminRoute = require('./admin')
+const { authenticateAdmin } = adminRoute;
 
 // Multer storage configuration
 const storage = multer.diskStorage({
@@ -28,7 +30,7 @@ router.get('/products', async (req, res) => {
 });
 
 // Edit first product
-router.post('/products/edit', upload.fields([
+router.post('/products/edit', authenticateAdmin, upload.fields([
     { name: 'imageUrl1', maxCount: 1 },
     { name: 'imageUrl2', maxCount: 1 },
     { name: 'imageUrl3', maxCount: 1 },
@@ -68,21 +70,40 @@ router.post('/products/edit', upload.fields([
         product.description6 = description6;
         product.price6 = price6;
 
+        // Define the fixed image names
+        const fixedImageNames = {
+            imageUrl1: 'productimage1.jpg',
+            imageUrl2: 'productimage2.jpg',
+            imageUrl3: 'productimage3.jpg',
+            imageUrl4: 'productimage4.jpg',
+            imageUrl5: 'productimage5.jpg',
+            imageUrl6: 'productimage6.jpg',
+        };
+
         // Update image URLs if new files are uploaded
         for (let i = 1; i <= 6; i++) {
             if (req.files[`imageUrl${i}`]) {
-                // Delete old file from server if exists
-                if (product[`imageUrl${i}`]) {
-                    const oldImagePath = path.join(__dirname, '../', product[`imageUrl${i}`]); // Corrected path
-                    fs.unlink(oldImagePath, (err) => {
+                const fixedImageName = fixedImageNames[`imageUrl${i}`];
+                const imagePath = path.join(__dirname, '../uploads', fixedImageName);
+
+                // Delete the old file if it exists
+                if (fs.existsSync(imagePath)) {
+                    fs.unlink(imagePath, (err) => {
                         if (err) {
                             console.error(`Error deleting old image for imageUrl${i}:`, err);
-                            // Proceed to replace the image URL regardless of unlink success
                         }
                     });
                 }
-                // Update with new filename, ensuring there's no extra 'uploads/' prefix
-                product[`imageUrl${i}`] = `uploads/${req.files[`imageUrl${i}`][0].filename}`;
+
+                // Rename the new uploaded image to the fixed name
+                fs.rename(req.files[`imageUrl${i}`][0].path, imagePath, (err) => {
+                    if (err) {
+                        console.error(`Error renaming new image for imageUrl${i}:`, err);
+                    }
+                });
+
+                // Update the product document with the new image URL
+                product[`imageUrl${i}`] = `uploads/${fixedImageName}`;
             }
         }
 

@@ -21,9 +21,11 @@ const EditGetStartedPopup = ({ startData, onClose, onSave }) => {
     data.append("url", formData.url);
 
     try {
+      const token = localStorage.getItem('token'); // Retrieve token from local storage
       const response = await axios.post("http://localhost:3000/api/start/edit", data, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
+          'Authorization': `Bearer ${token}` // Include token in the headers
         },
       });
       console.log("Response:", response.data);

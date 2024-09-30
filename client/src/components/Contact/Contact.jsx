@@ -30,9 +30,11 @@ const EditContactPopup = ({ contact, onClose, onSave }) => {
     }
 
     try {
+      const token = localStorage.getItem('token'); // Retrieve token from local storage
       await axios.post('http://localhost:3000/api/contactus/edit', data, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}` // Include token in the headers
         },
       });
       onSave(formData); // Pass the updated data to parent

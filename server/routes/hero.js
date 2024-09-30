@@ -4,6 +4,8 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs');
+const adminRoute = require('./admin')
+const { authenticateAdmin } = adminRoute;
 
 // Multer storage configuration
 const storage = multer.diskStorage({
@@ -28,19 +30,22 @@ router.get('/hero', async (req, res) => {
 });
 
 // POST route to update/create the hero section
-router.post('/hero/edit', upload.single('imageUrl'), async (req, res) => {
+router.post('/hero/edit', authenticateAdmin, upload.single('imageUrl'), async (req, res) => {
     try {
-        const { title, description, count1, description1, count2, description2} = req.body;
+        const { title, description, count1, description1, count2, description2 } = req.body;
 
         // Find the first hero document
         let hero = await heroModel.findOne({});
 
-        // If no document exists, create a new one
+        // Define the fixed image name
+        const fixedImageName = 'heroimage.jpg'; // You can change the extension to whatever the uploaded file type is
+
         if (!hero) {
+            // If no document exists, create a new one
             hero = new heroModel({
                 title,
                 description,
-                imageUrl: req.file ? `uploads/${req.file.filename}` : '',
+                imageUrl: req.file ? `uploads/${fixedImageName}` : '',
                 count1,
                 description1,
                 count2,
@@ -51,17 +56,27 @@ router.post('/hero/edit', upload.single('imageUrl'), async (req, res) => {
             hero.title = title;
             hero.description = description;
 
-            // If a new image is uploaded, delete the old image and update
+            // If a new image is uploaded, overwrite the existing hero image
             if (req.file) {
-                if (hero.imageUrl) {
-                    const oldImagePath = path.join(__dirname, '..', hero.imageUrl);
-                    fs.unlink(oldImagePath, (err) => {
+                const imagePath = path.join(__dirname, '..', 'uploads', fixedImageName);
+                
+                // Delete the old image if it exists
+                if (fs.existsSync(imagePath)) {
+                    fs.unlink(imagePath, (err) => {
                         if (err) {
                             console.error('Error deleting old image:', err);
                         }
                     });
                 }
-                hero.imageUrl = `uploads/${req.file.filename}`;
+
+                // Move the new image with the fixed name
+                fs.rename(req.file.path, imagePath, (err) => {
+                    if (err) {
+                        console.error('Error renaming new image:', err);
+                    }
+                });
+
+                hero.imageUrl = `uploads/${fixedImageName}`;
             }
 
             hero.count1 = count1;
@@ -77,6 +92,7 @@ router.post('/hero/edit', upload.single('imageUrl'), async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
 
 module.exports = router;
 
